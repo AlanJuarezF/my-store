@@ -9,23 +9,23 @@ const port = 3000;
 
 app.use(express.json());
 
-const whitelist = ['http://localhost:8080', 'https://myapp.com'];
+const whitelist = ['http://localhost:3000','https://myapp.com', 'http://localhost:8080'];
 const options = {
   origin: (origin, callback) => {
-    if (whitelist.includes(origin)) {
+    if(whitelist.includes(origin) || !origin) {
       callback(null, true);
-    }else {
+    } else {
       callback(new Error('No permitido'));
     }
   },
 };
 app.use(cors(options));
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
    res.send('Hola mi primer server con express!')
 })
 
-app.get('/nueva-ruta', (req, res) => {
+app.get('/api/nueva-ruta', (req, res) => {
   res.send('Hola soy nueva ruta!')
 })
 
