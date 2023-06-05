@@ -1,6 +1,8 @@
 const express = require('express')
 
 const ProductService =require('./../services/ProductService')
+const ValidatorHandler = require('./../middlewares/ValidatorHandler')
+const { createProductSchema, getProductSchema, updateProductSchema} = require('./../schemas/ProductSchema')
 
 const router = express.Router()
 
@@ -19,8 +21,9 @@ router.get('/filter', (req, res) => {
 
 
 
-router.get('/:id', async (req, res, next) => {
-
+router.get('/:id',
+  ValidatorHandler(getProductSchema, 'params'),
+  async (req, res, next) => {
   try{
     const { id } = req.params
     const product = await service.findOneProduct( id )
@@ -30,14 +33,18 @@ router.get('/:id', async (req, res, next) => {
   }
 })
 
-router.post('/', async (req, res) => {
+router.post('/',
+ValidatorHandler(createProductSchema, 'body'),
+  async (req, res) => {
   const body = req.body
   const newProduct = await service.createProduct(body)
   res.status(201).json(newProduct)
 })
 
-router.patch('/:id', async (req, res, next) => {
-
+router.patch('/:id',
+  ValidatorHandler(getProductSchema, 'params'),
+  ValidatorHandler(updateProductSchema, 'body'),
+  async (req, res, next) => {
   try {
     const { id } = req.params
     const body = req.body
